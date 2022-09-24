@@ -26,9 +26,6 @@ node {
 
            // Run docker commands ....
        def app = docker.build("alinbratosin/docker-nodejs-demo:${commit_id}", '.').push()
-       }
-       sh "[ -d \$DOCKER_CONFIG ] && rm -rf \$DOCKER_CONFIG"
-     }
      }
    }
 }
