@@ -13,8 +13,22 @@ node {
      }
    }
    stage('docker build/push') {
-     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+   
+   // Create a temporary docker config directory
+   withEnv(["DOCKER_CONFIG=" + pwd(tmp:true) + "/.docker"]) {
+
+     // Create a temporary Docker config file
+     sh '''
+       mkdir -p \${DOCKER_CONFIG}
+       echo '{"credsStore":"envvars"}' > \${DOCKER_CONFIG}/config.json
+     '''
+     withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_CREDS_PASSWORD', usernameVariable: 'DOCKER_CREDS_USERNAME')]) {
+
+           // Run docker commands ....
        def app = docker.build("alinbratosin/docker-nodejs-demo:${commit_id}", '.').push()
+       }
+       sh "[ -d \$DOCKER_CONFIG ] && rm -rf \$DOCKER_CONFIG"
+     }
      }
    }
 }
