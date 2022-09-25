@@ -10,6 +10,8 @@ node {
      myTestContainer.pull()
      myTestContainer.inside {
        sh 'npm install --only=dev'
+       sh 'npm audit fix --force'
+       sh 'npm install -g npm@8.19.2'
        sh 'npm test'
      }
    }
