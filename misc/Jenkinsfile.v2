@@ -19,13 +19,19 @@ node {
      myTestContainer.pull()
      myTestContainer.inside("--link ${mysql.id}:mysql") { // using linking, mysql will be available at host: mysql, port: 3306
           sh 'npm install --only=dev' 
-          sh 'npm test'                     
+          sh 'npm test'
+          sh 'npm audit fix --force'
      }                                   
      mysql.stop()
    }                                     
-   stage('docker build/push') {            
-     docker.withRegistry('https://index.docker.io/v2/', 'dockerhub') {
-       def app = docker.build("wardviaene/docker-nodejs-demo:${commit_id}", '.').push()
-     }                                     
-   }                                       
+   stage('Push image') {
+    withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+        def registry_url = "registry.hub.docker.com/"
+        sh "docker login -u $USER -p $PASSWORD ${registry_url}"
+        docker.withRegistry("http://${registry_url}", "dockerhub") {
+            // Push your image now
+            def app = docker.build("alinbratosin/docker-nodejs-demo:${commit_id}", '.').push()
+        }
+    }
+}                         
 }                                          
