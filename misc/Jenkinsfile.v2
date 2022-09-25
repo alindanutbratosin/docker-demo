@@ -7,6 +7,10 @@ node {
    }
    stage('test') {
      def myTestContainer = docker.image('node:4.6')
+     withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+        def registry_url = "registry.hub.docker.com/"
+        sh "docker login -u $USER -p $PASSWORD ${registry_url}"
+        docker.withRegistry("http://${registry_url}", "dockerhub")
      myTestContainer.pull()
      myTestContainer.inside {
        sh 'npm install --only=dev'
