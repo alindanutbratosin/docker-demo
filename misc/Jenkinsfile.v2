@@ -11,7 +11,8 @@ node {
         sh "docker login -u $USER -p $PASSWORD ${registry_url}"
         docker.withRegistry("http://${registry_url}", "dockerhub") {
      def myTestContainer = docker.image('node')
-     myTestContainer.pull()
+     //myTestContainer.pull()
+     sh 'docker pull node:4.6'
      }
      }
      myTestContainer.inside {
