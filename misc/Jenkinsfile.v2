@@ -6,13 +6,14 @@ node {
      commit_id = readFile('.git/commit-id').trim()
    }
    stage('test') {
-    withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+   def myTestContainer = docker.image('node')
+   withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
         def registry_url = "registry.hub.docker.com/"
         sh "docker login -u $USER -p $PASSWORD ${registry_url}"
         docker.withRegistry("http://${registry_url}", "dockerhub") {
-     def myTestContainer = docker.image('node').run("sh docker pull node:4.6")
-     //myTestContainer.pull()
+     myTestContainer.pull()
      //sh 'docker pull node:4.6'
+     }
      }
      }
      myTestContainer.inside {
