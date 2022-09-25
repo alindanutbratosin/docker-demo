@@ -13,7 +13,7 @@ node {
      sh "docker login -u $USER -p $PASSWORD ${registry_url}"
      docker.withRegistry("http://${registry_url}", "dockerhub") {
             // Pull your image now
-            def myTestContainer = docker.image('node:4.6')
+            def myTestContainer = docker.image('docker.io/library/node:4.6')
             myTestContainer.pull()
     }
     }     
