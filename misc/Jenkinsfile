@@ -14,7 +14,7 @@ node {
    stage('Push image') {
     withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
         def registry_url = "registry.hub.docker.com/"
-        bat "docker login -u $USER -p $PASSWORD ${registry_url}"
+        sh "docker login -u $USER -p $PASSWORD ${registry_url}"
         docker.withRegistry("http://${registry_url}", "dockerhub") {
             // Push your image now
             def app = docker.build("alinbratosin/docker-nodejs-demo:${commit_id}", '.').push()
