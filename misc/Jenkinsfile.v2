@@ -15,7 +15,6 @@ node {
      //sh 'docker pull node:4.6'
      }
      }
-     }
      myTestContainer.inside {
        sh 'npm install --only=dev'
        sh 'npm audit fix --force'
