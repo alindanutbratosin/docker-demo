@@ -10,9 +10,9 @@ node {
         def registry_url = "registry.hub.docker.com/"
         sh "docker login -u $USER -p $PASSWORD ${registry_url}"
         docker.withRegistry("http://${registry_url}", "dockerhub") {
-     def myTestContainer = docker.image('node')
+     def myTestContainer = docker.image('node').run("sh docker pull node:4.6")
      //myTestContainer.pull()
-     sh 'docker pull node:4.6'
+     //sh 'docker pull node:4.6'
      }
      }
      myTestContainer.inside {
