@@ -6,8 +6,16 @@ node {
      commit_id = readFile('.git/commit-id').trim()
    }
    stage('test') {
-   def myTestContainer = docker.image('node')
-     myTestContainer.pull()
+   //def myTestContainer = docker.image('node')
+   //myTestContainer.pull()
+     withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD')]) {
+     def registry_url = "registry.hub.docker.com/"
+     sh "docker login -u $USER -p $PASSWORD ${registry_url}"
+     docker.withRegistry("http://${registry_url}", "dockerhub") {
+            // Pull your image now
+            def myTestContainer = docker.image('node:4.6').pull()
+    }
+    }     
      myTestContainer.inside {
        sh 'npm install --only=dev'
        sh 'npm audit fix --force'
