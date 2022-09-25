@@ -17,7 +17,7 @@ node {
         bat "docker login -u $USER -p $PASSWORD ${registry_url}"
         docker.withRegistry("http://${registry_url}", "dockerhub") {
             // Push your image now
-            bat "alinbratosin/docker-nodejs-demos:v1"
+            def app = docker.build("alinbratosin/docker-nodejs-demo:${commit_id}", '.').push()
         }
     }
 }
